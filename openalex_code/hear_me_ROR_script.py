@@ -15,9 +15,6 @@ import argparse
 from tqdm import tqdm
 import math
 import duckdb as db
-from grabbers import strip_figures, grab_pdf
-from playwright.async_api import Playwright, async_playwright, expect
-import asyncio
 
 def remove_duplicate_authors(publications, silent=False):
     """ Removes duplicate authors from a list of publications
@@ -41,7 +38,7 @@ def remove_duplicate_authors(publications, silent=False):
         pub["authorships"] = new_authors
     return publications
 
-def results_per_year(year, ror="03m2x1q45", silent=False, filter_duplicate_authors=True):
+def results_per_year(year, ror="03m2x1q45", silent=False, filter_duplicate_authors=True, testing=False):
     """ Gets the publications for a school for a year
 
     Args:
@@ -81,6 +78,8 @@ def results_per_year(year, ror="03m2x1q45", silent=False, filter_duplicate_autho
         cursor = data["meta"].get("next_cursor",None)
         if not silent:
             pbar.update(1)
+        if testing:
+            break
     return all_res
 
 def get_publications(ror: str, years: range, output_file: str, silent=False, get_authors=False):
@@ -174,63 +173,8 @@ def add_institution_to_db(con: db.DuckDBPyConnection, institution_ror: str = Non
         pass
 
     return institution_id
-
-
-async def add_publication_and_figures(con: db.DuckDBPyConnection, pub: dict, content_root_path: str, playwright: Playwright) -> None:
-    pub_date = pub["publication_date"]
-    pub_id = int(pub["id"].split("W")[-1])
-    pub_title = pub["title"][:200].replace("'", "")
-    pub_doi = pub["doi"]
-    pub_oa_url = pub["open_access"]["oa_url"]
-    pup_oa_status = pub["open_access"]["oa_status"]
-
-    # Check if publication already exists
-    con.execute(f"SELECT COUNT(1) FROM paper WHERE id = {pub_id};")
-    exists = con.fetchone()[0]
-    if exists:
-        return
-
-    # Grab pdf
-    if pup_oa_status == "closed":
-        pdf_path = None
-        pdf_grab_result = False
-    else:
-        pub_folder = f"{content_root_path}/{pub_id}"
-        os.makedirs(pub_folder, exist_ok=True)
-        pdf_path = f"{pub_folder}/{pub_id}.pdf"
-        pdf_grab_result = await grab_pdf(pub_oa_url, pdf_path, playwright)
     
-    if not pdf_grab_result:
-        pdf_path = None
-        os.rmdir(pub_folder)
-    
-    # Add publication to database
-    try:
-        if pdf_path:
-            con.execute(f"""INSERT INTO paper VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}', '{pdf_path}');""")
-        else:
-            con.execute(f"""INSERT INTO paper (id, title, doi, publication_date, oa_url) VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}');""")
-    except db.ConstraintException:
-        pass
-
-    # Grab figures and add to database
-    if pdf_grab_result:
-        figures_folder = f"{pub_folder}/figures"
-        os.makedirs(figures_folder, exist_ok=True)
-        strip_figures(pdf_path, figures_folder+"/")
-
-        # Add figures to database
-        for figure in os.listdir(figures_folder):
-            figure_id = abs(int(figure.split(".")[0])) + (pub_id*100)
-            figure_local_path = os.path.relpath(f"{figures_folder}/{figure}", content_root_path)
-            print(figure_local_path)
-            try:
-                con.execute(f"""INSERT INTO figure (id, paper_id, local_path) VALUES ({figure_id}, {pub_id}, '{figure_local_path}');""")
-            except db.ConstraintException:
-                pass
-
-    
-async def populate_database(database_file: str, ror: str, years: range, content_root: str,
+def populate_database(database_file: str, ror: str, years: range, content_root: str,
                       json_output: str = None, silent: bool = False) -> None:
     """ Populates a database with publications for a school for a range of years
 
@@ -243,18 +187,41 @@ async def populate_database(database_file: str, ror: str, years: range, content_
     """
     con = db.connect(database_file)
     inst_id = add_institution_to_db(con, institution_ror=ror)
-    async with async_playwright() as playwright:
 
-        for year in years:
-            if not silent:
-                print(f"Getting publications for {year}")
-            publications = results_per_year(year, ror, silent)
-            for pub in tqdm(publications):
+    for year in years:
+        if not silent:
+            print(f"Getting publications for {year}, database version")
+        publications = results_per_year(year, ror, silent,testing=True)
+        print("processing publications")
+        for pub in tqdm(publications):
 
-                # Add publication to database
-                await add_publication_and_figures(con, pub, content_root, playwright)
-                
-                for a in pub["authorships"]:
+            # Add publication to database
+            #await add_publication_and_figures(con, pub, content_root, playwright)
+            # TODO wrap these publication table lines in a function
+            
+            pub_date = pub["publication_date"]
+            pub_id = int(pub["id"].split("W")[-1])
+            pub_title = pub["title"][:200].replace("'", "")
+            pub_doi = pub["doi"]
+            pub_oa_url = pub["open_access"]["oa_url"]
+            pub_oa_status = pub["open_access"]["oa_status"]
+            # this section is checking for whether the table has the paper in it already
+            con.execute(f"SELECT COUNT(1) FROM paper WHERE id = {pub_id};")
+            exists = con.fetchone()[0]
+            
+            if exists:
+                # want to continue to the next publication and not try to update either paper table, or the authorship tables, because this has already happened
+                continue
+
+            con.execute(f"""INSERT INTO paper (id, title, doi, publication_date, oa_url,inst_id) VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}','{pub_inst_id}');""")
+            for a in pub["authorships"]:
+                # TODO make sure filter the authors and only include the people that are actually affiliated with our ROR code 
+                institutions = a["institutions"]
+                # get the rors from the institutions author is affiliated with
+                # use path to trim off only the last part
+                rors = [Path(i["ror"]).stem for i in institutions]
+                # only add the author to the table if we see their affiliation with the university 
+                if ror in rors:
                     try:
                         con.execute(f"""INSERT INTO author VALUES ({a['author']['id'].split('A')[-1]}, '{a['author']['display_name'].replace("'", "")}');""")
                     except db.ConstraintException:
