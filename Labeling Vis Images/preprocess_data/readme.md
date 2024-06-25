@@ -19,7 +19,7 @@ import json
 
 # path to the folder containing the PDFs
 # input
-source_dir = '2022_pdfs_subset100'
+source_dir = '2022_pdfs_subset100' #the directory containing the source files
 # output
 target_dir = 'total_imgs'
 
@@ -56,6 +56,26 @@ with open(json_path, 'w') as json_file:
 print('image are saved to new path and json file is generated')
 
 ```
+- image_data.json data file example:
+
+```json
+
+[
+    {
+        "id": 1,
+        "path": "/total_imgs/img-1.jpg"
+    },
+
+    ...
+
+    {
+        "id": 13000,
+        "path": "/total_imgs/img-13000.jpg"
+    }
+]
+
+```
+
 ---------
 
 2. make giant montage images for preview
@@ -67,9 +87,14 @@ print('image are saved to new path and json file is generated')
     ├── data
     │   ├── downsize.py
     │   ├── total_imgs
+    │   ├── image_data.json
     │   └── batches
+            
 
 ```
+# !!!!!make sure before downsizeing, the images are ordered in 00001 --> 10000. otherwises the order will be different
+# !!!!!make sure before downsizeing, the images are ordered in 00001 --> 10000. otherwises the order will be different
+# !!!!!make sure before downsizeing, the images are ordered in 00001 --> 10000. otherwises the order will be different
 
 Here is the python code to do the sorting work:
 - downsize.py
@@ -149,6 +174,7 @@ Once you run the code, you are expected the images will be placed into the batch
     ├── data
     │   ├── downsize.py
     │   ├── total_imgs
+    │   ├── image_data.json
     │   └── batches
     │       ├── batch-1 --> 3600 images inside 
     │       ├── batch-2 --> 3600 images inside 
@@ -172,15 +198,16 @@ Once you finsihed the code, you should be able to see
     ├── data
     │   ├── downsize.py
     │   ├── total_imgs
+    │   ├── image_data.json
     │   └── batches
     │   │   ├── batch-1 --> 3600 images inside 
     │   │   ├── batch-2 --> 3600 images inside 
     │   │   ├── batch-3 --> 3600 images inside
-    │   │   └── batch-4 --> rest images inside
-    │   ├── images_to_montage-1.txt
-    │   ├── images_to_montage-2.txt
-    │   ├── images_to_montage-3.txt
-    │   └── images_to_montage-4.txt
+    │   │   ├── batch-4 --> rest images inside
+    │   │   ├── images_to_montage-1.txt
+    │   │   ├── images_to_montage-2.txt
+    │   │   ├── images_to_montage-3.txt
+    │   │   └── images_to_montage-4.txt
     
 ```
 
@@ -210,4 +237,70 @@ Explaination:
 - -tile 60x60: Arranges images in a grid layout where each cell is 60x60 pixels.
 - atlas-1.jpg: Output filename for the composite image.
 
+- Output:
+```
+    src
+    ├── data
+    │   ├── downsize.py
+    │   ├── total_imgs
+    │   ├── image_data.json
+    │   └── batches
+    │   │   ├── batch-1 --> 3600 images inside 
+    │   │   ├── batch-2 --> 3600 images inside 
+    │   │   ├── batch-3 --> 3600 images inside
+    │   │   ├── batch-4 --> rest images inside
+    │   │   ├── images_to_montage-1.txt
+    │   │   ├── images_to_montage-2.txt
+    │   │   ├── images_to_montage-3.txt
+    │   │   ├── images_to_montage-4.txt
+    │   │   ├── atlas-1.jpg
+    │   │   ├── atlas-2.jpg
+    │   │   ├── atlas-3.jpg
+    │   │   └── atlas-4.jpg  
+    
+```
+
 ----------------------------------------------------------------
+
+Once we have all the data we need to put all those images with the same directory into the server
+
+```
+    src
+    ├── data
+    │   ├── downsize.py
+    │   ├── total_imgs
+    │   ├── image_data.json
+    │   └── batches
+    │   │   ├── batch-1 --> 3600 images inside 
+    │   │   ├── batch-2 --> 3600 images inside 
+    │   │   ├── batch-3 --> 3600 images inside
+    │   │   ├── batch-4 --> rest images inside
+    │   │   ├── images_to_montage-1.txt
+    │   │   ├── images_to_montage-2.txt
+    │   │   ├── images_to_montage-3.txt
+    │   │   ├── images_to_montage-4.txt
+    │   │   ├── atlas-1.jpg
+    │   │   ├── atlas-2.jpg
+    │   │   ├── atlas-3.jpg
+    │   │   └── atlas-4.jpg  
+    
+```
+
+example, I am hosting those data at my server <em>https://zhiyangwang.site</em>
+```
+# here is the sturcture of my server
+    public
+    ├── Giant-image-data
+    │   ├── total_imgs
+    │   ├── image_data.json
+    │   └── batches
+    │   │   ├── batch-1 --> 3600 images inside 
+    │   │   ├── batch-2 --> 3600 images inside 
+    │   │   ├── batch-3 --> 3600 images inside
+    │   │   ├── batch-4 --> rest images inside
+    │   │   ├── atlas-1.jpg
+    │   │   ├── atlas-2.jpg
+    │   │   ├── atlas-3.jpg
+    │   │   └── atlas-4.jpg  
+    
+```
