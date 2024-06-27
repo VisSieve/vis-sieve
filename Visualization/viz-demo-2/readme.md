@@ -81,7 +81,7 @@
 
         -   Dynamically load high-resolution textures for sprites when the camera is near.
 
-    - 3-8:``` ```function setupHoverEvent()```
+    - 3-8: ```function setupHoverEvent()```
 
         -   Changes sprite size on hover to enhance interactive visual feedback.
 
