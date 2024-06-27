@@ -63,7 +63,7 @@ boad
 .loadingContent {
   position: relative;
   top: 1.8%;
-  width: 80%;
+  width: 90%;
   height: 90%;
   padding-top: 10%;
   display: flex;
@@ -214,14 +214,18 @@ boad
 
 </style>
 
-# Viz Sieves-label
+# Viz Sieves-Bubble
 
 ```js
 import * as THREE from 'npm:three';
 import { CSS2DRenderer,CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+// import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+// import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 let imagePositions = [];
+let groupLabelPosition = [];
+let groupLabel = [];
 let sprites = [];
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -240,6 +244,7 @@ labelRenderer.domElement.style.top = '10%';
 labelRenderer.domElement.style.pointerEvents = 'none';
 
 document.getElementById("threeD").appendChild(labelRenderer.domElement);
+
 fetch('https://zhiyangwang.site/giant-viz-data/image_tsne_projections.json')
   .then(response => response.json())
   .then(data => {
@@ -351,9 +356,12 @@ loadingDiv.style.display = "flex";
     scene.add(sprite);
     sprites.push(sprite);
   });
- 
+  fetch('https://zhiyangwang.site/giant-viz-data/group.json')
+    .then(response => response.json())
+    .then(handleGroupData);
   setupClickEvent(sprites, camera, renderer);
   setupHoverEvent(sprites, camera, renderer);
+  setupClickEventGroup(groupLabel, camera, renderer);
   setupCameraControl(camera, renderer)
   animate();
    enterButton.addEventListener('click',()=>{
@@ -556,10 +564,6 @@ function setupHoverEvent(sprites, camera, renderer) {
 // Hover Event to make the interaction more vivid
 
 
-
-
-
-
 // Camera Moving and label display when clciked
 // ----------------------------------------------------------------
 
@@ -590,7 +594,9 @@ function setupClickEvent(sprites, camera, renderer) {
                 selectedSprite.scale.multiplyScalar(1.4);
                 selectedSprite.position.y += 2;
                 focusSprite = selectedSprite;
+                  if(sprites == groupLabel){
 
+                  }else{}
                 // Create label if it doesn't exist
                 if (!selectedSprite.userData.labelObject) {
                     const spriteLabel = document.createElement('div');
@@ -657,55 +663,112 @@ function unSelectSprite(){
 // ----------------------------------------------------------------
 
 
-// Camera Moving fucntions
+// groupLabel move control
 // ----------------------------------------------------------------
+function setupClickEventGroup(sprites, camera, renderer) {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
+    renderer.domElement.addEventListener('mousemove', event => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(sprites);
+
+        if (intersects.length > 0) {
+            renderer.domElement.style.cursor = 'pointer';
+            const selectedSprite = intersects[0].object;
+            selectedSprite.scale.set(14, 7, 1.4); // Enlarge sprite on hover
+        } else {
+            renderer.domElement.style.cursor = 'auto';
+            sprites.forEach(sprite => {
+                sprite.scale.set(10, 5, 1);
+            });
+        }
+    });
+
+    renderer.domElement.addEventListener('click', event => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(sprites);
+
+        if (intersects.length > 0) {
+            const selectedSprite = intersects[0].object;
+
+            // Calculate camera move target position
+            const targetPosition = new THREE.Vector3(selectedSprite.position.x, selectedSprite.position.y + 10, selectedSprite.position.z);
+            const lookAtPosition = new THREE.Vector3(selectedSprite.position.x, 0, selectedSprite.position.z);
+            
+            moveCamera(targetPosition, lookAtPosition);
+        }
+    }, false);
+}
+
+//----------------------------------------------------------------
+// groupLabel move control
+
+
+
+
+
+// Camera Moving functions
+// ----------------------------------------------------------------
 function moveCamera(target, lookAtPosition) {
-    if (isCameraMoving) return; // Make sure do not repeat the same thing
+    if (isCameraMoving) return;
     isCameraMoving = true;
-    let delta = 0.1; 
-    const epsilon = 0.1;
-    const labelVisibilityThreshold = 0.5; // display label limit
-    let lastFrameTime = Date.now(); // for frequency control
- 
-    if (target !== initialCameraPosition) {
-      
 
-    }else{
-        let delta = 0.3; 
+    let delta = 0.1; // Initial interpolation factor
+    const epsilon = 0.1; // Distance threshold
+    const labelVisibilityThreshold = 0.5; // Label visibility threshold
+    let lastFrameTime = Date.now();
+
+    // Adjust delta for faster movement if moving to initial position
+    if (target === initialCameraPosition) {
+        delta = 0.3; // Increase interpolation factor for faster movement
     }
 
     function updateCameraPosition() {
         let now = Date.now();
         let elapsed = now - lastFrameTime;
 
-        if (elapsed > (1000 / 60)) { // max-freq-rate 60
+        if (elapsed > (1000 / 60)) {
             lastFrameTime = now - (elapsed % (1000 / 60));
             let distance = camera.position.distanceTo(target);
+
             if (distance > epsilon) {
                 camera.position.lerp(target, delta);
+                // Update view direction during movement
                 camera.lookAt(lookAtPosition);
                 raycaster.setFromCamera(mouse, camera);
                 requestAnimationFrame(updateCameraPosition);
 
-                // label visibility control
+                // Control label visibility
                 if (focusSprite && distance < labelVisibilityThreshold) {
                     let opacity = (labelVisibilityThreshold - distance) / labelVisibilityThreshold;
                     focusSprite.userData.labelObject.element.style.opacity = opacity;
                 }
             } else {
-
                 camera.position.copy(target);
-                camera.lookAt(lookAtPosition);
+                // Set final view direction after movement ends
+                // camera.lookAt(lookAtPosition);
                 raycaster.setFromCamera(mouse, camera);
                 isCameraMoving = false;
+
+                // Show or hide reset button based on target position
                 if (target !== initialCameraPosition) {
-                    resetButton.style.display = "flex"; // display return button
-                    }else{
-                    resetButton.style.display = "none";
-                    }
+                    resetButton.style.display = "flex"; // Show reset button
+                } else {
+                    resetButton.style.display = "none"; // Hide reset button
+                }
+
+                // Ensure label visibility
                 if (focusSprite) {
-                    focusSprite.userData.labelObject.element.style.opacity = 1; // make sure label is visible
+                    focusSprite.userData.labelObject.element.style.opacity = 1;
                 }
             }
         } else {
@@ -718,8 +781,68 @@ function moveCamera(target, lookAtPosition) {
 
 
 // ----------------------------------------------------------------
-// Camera Moving fucntions
+// Camera Moving functions
 
+
+
+// Encapsulate function to handle data and create sprites and lines
+// ----------------------------------------------------------------
+
+// Function to create text texture
+function createTextTexture(text) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = 256*2;
+    canvas.height = 128*2;
+
+    // Create radial gradient background
+    const gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 10, canvas.width / 2, canvas.height / 2, 60);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');  // Start color
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)');  // End color
+
+    context.fillStyle = gradient;
+    context.beginPath();
+    context.arc(canvas.width / 2, canvas.height / 2, 60, 0, 2 * Math.PI);
+    context.fill();
+
+    // Set text properties
+    context.textAlign = 'center'; // Center align text
+    context.textBaseline = 'middle'; // Middle baseline
+    context.fillStyle = '#000000'; // Text color
+    context.font = '24px Arial';
+    context.fillText(text, canvas.width / 2, canvas.height / 2); // Draw text at canvas center
+
+    return new THREE.CanvasTexture(canvas);
+}
+
+// Encapsulate function to handle data and create sprites and lines
+function handleGroupData(data) {
+    data.forEach(item => {
+        const { idx, label, x, z } = item;
+
+        // Create sprite with text
+        const textTexture = createTextTexture(label);
+        const spriteMaterial = new THREE.SpriteMaterial({ map: textTexture, transparent: true });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.position.set(x, 16, z);
+        sprite.scale.set(10, 5, 1); // Set appropriate sprite size
+        scene.add(sprite);
+        groupLabel.push(sprite);
+
+        // Create dashed line
+        const material = new THREE.LineDashedMaterial({ color: 0x0000ff, dashSize: 0.5, gapSize: 0.5, scale: 1, linewidth: 1 });
+        const points = [];
+        points.push(new THREE.Vector3(x, 15, z)); // Start from sprite center
+        points.push(new THREE.Vector3(x, 0, z));  // Project down to ground
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry, material);
+        line.computeLineDistances();
+        scene.add(line);
+    });
+}
+
+
+// Encapsulate function to handle data and create sprites and lines
 
 
 ```
