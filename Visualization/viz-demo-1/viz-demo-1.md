@@ -223,10 +223,7 @@ function init() {
   resetButton.addEventListener('click', () =>{
     moveCamera(initialCameraPosition, initialLookAtPosition);
     console.log("rest button clicked");
-     if (focusSprite.userData.labelObject) {
-                    focusSprite.userData.labelObject.element.style.visibility = 'hidden'; // Hide label
-                }
-                focusSprite = null;
+     unSelectSprite();
   
     resetButton.style.display = 'none';
   });
@@ -265,6 +262,7 @@ function setupCameraControl(camera, renderer) {
         if (angularVelocityY !== 0) {
          camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), angularVelocityY); 
          angularVelocityY *= angularDamping;
+        
         }
         if (angularVelocityZ !== 0) {
             camera.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), angularVelocityZ);
@@ -279,6 +277,9 @@ function setupCameraControl(camera, renderer) {
     // Add mousedown event listener for initiating drag
     renderer.domElement.addEventListener('mousedown', function(e) {
         if (isCameraMoving) return; // Disable manual control if the camera is automatically moving.
+         if(focusSprite){
+          unSelectSprite();
+         }
         isDragging = true;
         dragButton = e.button;
         previousMousePosition.x = e.clientX;
@@ -288,7 +289,9 @@ function setupCameraControl(camera, renderer) {
     // Add mousemove event listener for handling camera rotation
     renderer.domElement.addEventListener('mousemove', function(e) {
         if (!isDragging || isCameraMoving) return;
-
+         if(focusSprite){
+          unSelectSprite();
+         }
         const deltaX = e.clientX - previousMousePosition.x;
         const deltaY = e.clientY - previousMousePosition.y;
 
@@ -310,6 +313,9 @@ function setupCameraControl(camera, renderer) {
     // Add mousewheel event listener for zoom control
     renderer.domElement.addEventListener('wheel', function(e) {
         if (isCameraMoving) return;
+         if(focusSprite){
+          unSelectSprite();
+         }
         zoomVelocity += e.deltaY * -0.02; // Adjust zoom sensitivity as needed
     });
 
@@ -321,6 +327,7 @@ function setupCameraControl(camera, renderer) {
     // Set animation loop to continuously render the scene
     renderer.setAnimationLoop(() => {
         updateCamera();
+        
         renderer.render(scene, camera);
     });
 
@@ -491,6 +498,16 @@ function setupClickEvent(sprites, camera, renderer) {
     }, false);
 }
 
+function unSelectSprite(){
+  if (focusSprite) {
+                focusSprite.scale.divideScalar(1.4);
+                focusSprite.position.y -= 2;
+                if (focusSprite.userData.labelObject) {
+                    focusSprite.userData.labelObject.element.style.visibility = 'hidden'; // Hide label
+                }
+                focusSprite = null;
+            }
+}
 
 
 // Camera Moving trigger and label display when clciked the sprites
@@ -501,15 +518,15 @@ function setupClickEvent(sprites, camera, renderer) {
 // ----------------------------------------------------------------
 
 function moveCamera(target, lookAtPosition) {
-    if (isCameraMoving) return; // 确保不重复调用移动相机的函数
+    if (isCameraMoving) return; // Make sure do not repeat the same thing
     isCameraMoving = true;
     let delta = 0.1; 
     const epsilon = 0.1;
-    const labelVisibilityThreshold = 0.5; // 标签显示阈值
-    let lastFrameTime = Date.now(); // 用于帧率控制
+    const labelVisibilityThreshold = 0.5; // display label limit
+    let lastFrameTime = Date.now(); // for frequency control
  
     if (target !== initialCameraPosition) {
-        resetButton.style.display = "flex"; // 显示重置按钮
+        resetButton.style.display = "flex"; // display return button
     }else{
         let delta = 0.3; 
     }
@@ -518,7 +535,7 @@ function moveCamera(target, lookAtPosition) {
         let now = Date.now();
         let elapsed = now - lastFrameTime;
 
-        if (elapsed > (1000 / 60)) { // 控制最大帧率约为60fps
+        if (elapsed > (1000 / 60)) { // max-freq-rate 60
             lastFrameTime = now - (elapsed % (1000 / 60));
             let distance = camera.position.distanceTo(target);
             if (distance > epsilon) {
@@ -527,7 +544,7 @@ function moveCamera(target, lookAtPosition) {
                 raycaster.setFromCamera(mouse, camera);
                 requestAnimationFrame(updateCameraPosition);
 
-                // 控制标签可见性
+                // label visibility control
                 if (focusSprite && distance < labelVisibilityThreshold) {
                     let opacity = (labelVisibilityThreshold - distance) / labelVisibilityThreshold;
                     focusSprite.userData.labelObject.element.style.opacity = opacity;
@@ -538,7 +555,7 @@ function moveCamera(target, lookAtPosition) {
                 raycaster.setFromCamera(mouse, camera);
                 isCameraMoving = false;
                 if (focusSprite) {
-                    focusSprite.userData.labelObject.element.style.opacity = 1; // 确保标签完全可见
+                    focusSprite.userData.labelObject.element.style.opacity = 1; // make sure label is visible
                 }
             }
         } else {
