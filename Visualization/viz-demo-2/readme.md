@@ -1,4 +1,4 @@
-# viz-demo-2
+# viz-demo-2-bugFixed-bubbleFeatures
 
 ## New-features
 
