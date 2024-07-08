@@ -4,30 +4,44 @@ This space is to provide resources for the project, such as important links, pro
 
 # Links
 
-Devin’s https://github.com/DevinBayly/vis-seive/ (MAIN)
+## GitHub
 
-Carolina’s https://github.com/carolinarr/vis-sieve (temporary)
++ Org: [https://github.com/VisSieve](https://github.com/VisSieve) (MAIN)
++ Devin’s https://github.com/DevinBayly/vis-seive/
++ Carolina’s https://github.com/carolinarr/vis-sieve
 
-PDF Storage - [https://data.cyverse.org/dav-anon/iplant/home/baylyd/vis_sieve/](https://data.cyverse.org/dav-anon/iplant/home/baylyd/vis_sieve/)
+## OpenAlex
 
-[https://docs.openalex.org/](https://docs.openalex.org/)
++ [Documentation](https://docs.openalex.org/)
++ [Documentation - Topics](https://docs.openalex.org/api-entities/topics)
+    + [Topics Paper](https://docs.google.com/document/d/1bDopkhuGieQ4F8gGNj7sEc8WSE8mvLZS/edit#heading=h.5w2tb5fcg77r) - contains diagram
 
-Label Studio - [http://149.165.169.100:8080/](http://149.165.169.100:8080/)
+## PDF Storage: cyverse 
 
-CSR account: c.roe email, low sec password
+[de.cyverse.org](https://de.cyverse.org/)
+
+Devin's PDF Storage: [https://data.cyverse.org/dav-anon/iplant/home/baylyd/vis_sieve/](https://data.cyverse.org/dav-anon/iplant/home/baylyd/vis_sieve/)  
+Carolina's PDF Storage: [https://data.cyverse.org/dav-anon/iplant/home/carolinarr/vis-sieve/Princeton_content](https://data.cyverse.org/dav-anon/iplant/home/carolinarr/vis-sieve/Princeton_content)
+
+
+## Label Studio
+
+[http://149.165.169.100:8080/](http://149.165.169.100:8080/)  
+notes - CSR Labelstudio account reminder: c.roe email, low sec password
 
 # Project Stages
 
-1. url gathering
-2. pdf retrieval
-3. (get figs?)
+1. get urls
+2. get pdfs
+3. get figs
+4. label figs
 4. visualization
 
-# 1. URL Gathering Stage
+## 1. Get URLS
 
 [https://github.com/DevinBayly/vis-seive](https://github.com/DevinBayly/vis-seive)
 
-# 2. PDF grabbing
+## 2. Get PDFS
 
 Cyverse Datastore link [https://data.cyverse.org/dav-anon/iplant/home/baylyd/vis_sieve/](https://data.cyverse.org/dav-anon/iplant/home/baylyd/vis_sieve/)
 
@@ -37,23 +51,29 @@ Example `python hear_me_ROR_script.py` run:
 
 `python hear_me_ROR_script.py --help` to see all the options
 
-# 3. labeling
+## 3. Get Figs
 
+Instead, now going to try pdffigures2.  
+[!!! Insert Devin's container for pdffigures2.]
+
+## 4. Label Figs
+
+Originally tried LabelStudio:
 [http://149.165.169.100:8080/user/login/](http://149.165.169.100:8080/user/login/)
+go ahead and try to log in to and attempt to label a few things.
 
-go ahead adn try to log in to and attempt to label a few things
 
-# 4. Visualization Stage
+## 5. Visualization
 
-## Observable Framework
+### Observable Framework
 
 more details to come, but [https://observablehq.com/framework/what-is-framework](https://observablehq.com/framework/what-is-framework) is a promising start. Note, it’s recommended to setup a code space from the vissieve repo. 
 
 [https://devinbayly.observablehq.cloud/hello-duckdb/vissieve-test](https://devinbayly.observablehq.cloud/hello-duckdb/vissieve-test)
 
-## Procedures
+### Procedures
 
-### Docker Container + Reload  Setup Instructions
+#### Docker Container + Reload  Setup Instructions
 
 1. Follow "Setup docker container" instructions here: 
 [https://github.com/DevinBayly/vis-sieve/tree/main/visualization](https://github.com/DevinBayly/vis-sieve/tree/main/visualization) 
@@ -87,5 +107,4 @@ BUT use this docker command instead:
 # Notion Shortcut
 
 To indent bulleted list - Tab
-
 To unindent bulleted list - Shift + Tab
