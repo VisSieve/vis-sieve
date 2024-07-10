@@ -1,4 +1,4 @@
-# Data Base
+# Data Table Schema
 
 - Table: author
     - Column: id, Data Type: BIGINT
