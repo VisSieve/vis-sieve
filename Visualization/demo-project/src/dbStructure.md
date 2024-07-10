@@ -1,0 +1,56 @@
+# Data Base
+
+- Table: author
+    - Column: id, Data Type: BIGINT
+    - Column: name, Data Type: VARCHAR
+- Table: contribution
+    - Column: au_id, Data Type: BIGINT
+    - Column: paper_id, Data Type: BIGINT
+- Table: figure
+    - Column: id, Data Type: BIGINT
+    - Column: paper_id, Data Type: BIGINT
+    - Column: local_path, Data Type: VARCHAR
+    - Column: server_path, Data Type: VARCHAR
+- Table: figure_property
+    - Column: name, Data Type: VARCHAR
+    - Column: int_value, Data Type: INTEGER
+    - Column: string_value, Data Type: VARCHAR
+    - Column: figure_id, Data Type: BIGINT
+    - Column: xPos, Data Type: INTEGER
+    - Column: yPos, Data Type: INTEGER
+    - Column: zPos, Data Type: INTEGER
+- Table: institution
+    - Column: id, Data Type: BIGINT
+    - Column: ror, Data Type: VARCHAR
+    - Column: name, Data Type: VARCHAR
+- Table: keyword
+    - Column: id, Data Type: BIGINT
+    - Column: keyword, Data Type: VARCHAR
+- Table: paper
+    - Column: id, Data Type: BIGINT
+    - Column: title, Data Type: VARCHAR
+    - Column: doi, Data Type: VARCHAR
+    - Column: publication_date, Data Type: DATE
+    - Column: oa_url, Data Type: VARCHAR
+    - Column: pdf_path, Data Type: VARCHAR
+    - Column: inst_id, Data Type: BIGINT
+    - Column: topics, Data Type: INTEGER
+- Table: residence
+    - Column: au_id, Data Type: BIGINT
+    - Column: inst_id, Data Type: BIGINT
+- Table: topic
+    - Column: id, Data Type: BIGINT
+    - Column: name, Data Type: VARCHAR
+    - Column: subfield, Data Type: VARCHAR
+    - Column: field, Data Type: VARCHAR
+    - Column: domain, Data Type: VARCHAR
+- Table: work_keyword
+    - Column: id, Data Type: BIGINT
+    - Column: work_id, Data Type: BIGINT
+    - Column: keyword_id, Data Type: BIGINT
+    - Column: score, Data Type: DOUBLE
+- Table: work_topic
+    - Column: id, Data Type: BIGINT
+    - Column: work_id, Data Type: BIGINT
+    - Column: topic_id, Data Type: BIGINT
+    - Column: score, Data Type: DOUBLE
