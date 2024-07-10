@@ -54,3 +54,10 @@
     - Column: work_id, Data Type: BIGINT
     - Column: topic_id, Data Type: BIGINT
     - Column: score, Data Type: DOUBLE
+-----------------------------------
+## add this table for altas
+- Table: altas 
+    - Column: id, Data Type: BIGINT
+    - Column: server_path, Data Type: VARCHAR
+    - Column: width, Data Type: BIGINT
+    - Column: height, Data Type: BIGINT
