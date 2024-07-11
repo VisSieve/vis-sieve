@@ -47,18 +47,18 @@ def remove_duplicate_authors(publications, silent=False):
         pub["authorships"] = new_authors
     return publications
 
-def results_per_year(year, ror="03m2x1q45", silent=False, filter_duplicate_authors=True, testing=False):
+def results_per_year(year, ror="03m2x1q45", email, silent=False, filter_duplicate_authors=True, testing=False):
     """ Gets the publications for a school for a year
 
     Args:
         year (int): year to get publications for
         ror (str): ROR identification of the school
-
+        email (str): email address to be used by OpenAlex API
     Returns:
         list: list of publications for the school for the year
     """
     all_res = []
-    headers = {"mailto":"baylyd@arizona.edu"} ## Make command line arg
+    headers = {"mailto": f"{email}"} 
     res = rq.get(f"https://api.openalex.org/works?filter=publication_year:{year},institutions.ror:{ror}&cursor=*&per-page=200",headers=headers)
     data = res.json()
     if filter_duplicate_authors:
@@ -91,12 +91,13 @@ def results_per_year(year, ror="03m2x1q45", silent=False, filter_duplicate_autho
             break
     return all_res
 
-def get_publications(ror: str, years: range, output_file: str, silent=False, get_authors=False):
+def get_publications(ror: str, email: str, years: range, output_file: str, silent=False, get_authors=False):
     """ Gets the publications for a school for a range of years and 
     writes them to a json file
 
     Args:
         ror (str): ROR identification of the school
+        email (str): email address to be used by OpenAlex API
         years (range): range of years to get publications for
     
     Returns:
@@ -106,7 +107,7 @@ def get_publications(ror: str, years: range, output_file: str, silent=False, get
     for year in years:
         if not silent:
             print(f"Getting publications for {year}")
-        all_res.extend(results_per_year(year, ror, silent))
+        all_res.extend(results_per_year(year, ror, email, silent))
     with open(output_file,"w") as f:
         json.dump(all_res,f)
 
@@ -183,13 +184,14 @@ def add_institution_to_db(con: db.DuckDBPyConnection, institution_ror: str = Non
 
     return institution_id
     
-def populate_database(database_file: str, ror: str, years: range, content_root: str,
+def populate_database(database_file: str, ror: str, email: str, years: range, content_root: str,
                       json_output: str = None, silent: bool = False) -> None:
     """ Populates a database with publications for a school for a range of years
 
     Args:
         database_file (str): name of the database file to populate
         ror (str): ROR identification of the school
+        email (str): email address to be used by OpenAlex API
         years (range): range of years to get publications for
         json_output (str): name of the json file to write the publications to
         silent (bool): silence output
@@ -200,7 +202,7 @@ def populate_database(database_file: str, ror: str, years: range, content_root: 
     for year in years:
         if not silent:
             print(f"Getting publications for {year}, database version")
-        publications = results_per_year(year, ror, silent,testing=True)
+        publications = results_per_year(year, ror, email, silent,testing=True)
         print("processing publications")
         for pub in tqdm(publications):
 
@@ -251,14 +253,13 @@ def populate_database(database_file: str, ror: str, years: range, content_root: 
                             pass
 
 
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Get publications for a school")
     parser.add_argument("first_year", help="First year to get publications for")
     parser.add_argument("last_year", help="Last year to get publications for")
     parser.add_argument("--ror", help="ROR of the school (UofA by default)", default="03m2x1q45")
-    parser.add_argument("--output", help="Output file name", default="hear_me_ROR_out.json")
+    parser.add_argument("--email", help="email address to be used by OpenAlex API")
+    parser.add_argument("--output", help="Output file name", default="urls.json")
     parser.add_argument("-a", "--get_authors", help="Get authors as well as publications", action="store_true")
     parser.add_argument("-s", "--silent", help="Silence output", action="store_true")
     parser.add_argument("--database", help="Database file to store publications in")
@@ -273,8 +274,8 @@ if __name__ == "__main__":
         if not db_file.exists():
             print("creating" , db_file)
             create(db_file)
-        populate_database(args.database, args.ror, range(int(args.first_year), int(args.last_year)+1), args.content_root, args.output, args.silent)
+        populate_database(args.database, args.ror, args.email, range(int(args.first_year), int(args.last_year)+1), args.content_root, args.output, args.silent)
     else:
-        get_publications(args.ror, range(int(args.first_year), int(args.last_year)+1), args.output, args.silent, args.get_authors)
+        get_publications(args.ror, args.email, range(int(args.first_year), int(args.last_year)+1), args.output, args.silent, args.get_authors)
     
 
