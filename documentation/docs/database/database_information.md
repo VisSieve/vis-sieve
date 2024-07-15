@@ -13,6 +13,7 @@
 - [draw.io](http://draw.io) file:
     
     [publication_database_er.drawio](database_information/publication_database_er.drawio)
+- [database structure as list](https://github.com/VisSieve/main/blob/Zhiyang-Doc/Visualization/demo-project/src/dbStructure.md)
     
 
 ## Database Code
