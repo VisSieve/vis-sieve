@@ -11,6 +11,7 @@ def create(name):
                 DROP TABLE IF EXISTS author;
                 DROP TABLE IF EXISTS institution;
                 DROP TABLE IF EXISTS paper;
+                DROP TABLE IF EXISTS atlas;
                 ''')
 
 
@@ -58,9 +59,18 @@ def create(name):
         int_value INTEGER,
         string_value VARCHAR(100),
         figure_id BIGINT,
+        xPos INTEGER,
+        yPos INTEGER,
+        zPos INTEGER,
+    );
+    
+    CREATE TABLE atlas (
+        id BIGINT,
+        server_path VARCHAR,
+        width BIGINT,
+        height BIGINT
     );
                 
-
     ''')
 
     con.close()
