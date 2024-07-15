@@ -23,7 +23,7 @@ import os
 from pathlib import Path
 
 # modules we've written
-from database.create_database import create
+from database.db_create_database import create
 
 def remove_duplicate_authors(publications, silent=False):
     """ Removes duplicate authors from a list of publications
@@ -47,7 +47,7 @@ def remove_duplicate_authors(publications, silent=False):
         pub["authorships"] = new_authors
     return publications
 
-def results_per_year(year, ror="03m2x1q45", email, silent=False, filter_duplicate_authors=True, testing=False):
+def results_per_year(year, ror, email, silent=False, filter_duplicate_authors=True, testing=False):
     """ Gets the publications for a school for a year
 
     Args:
@@ -252,6 +252,18 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
                         except db.ConstraintException:
                             pass
 
+
+""" # Data to be used for code development/debugging (comment section out when not in use!)
+first_year = 2023
+last_year = 2023
+years = range(first_year, last_year+1)
+ror = '00hx57361' # Princeton's ROR code
+email = 'c.roe-raymond@princeton.edu'
+output = 'urls.json'
+get_authors = True
+silent = False
+database = 'publications_princeton_2023.db'
+content_root = 'results' """
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Get publications for a school")
