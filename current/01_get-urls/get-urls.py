@@ -91,7 +91,7 @@ def results_per_year(year, ror, email, silent=False, filter_duplicate_authors=Tr
             break
     return all_res
 
-def get_publications(ror: str, email: str, years: range, output_file: str, silent=False, get_authors=False):
+def get_publications(ror: str, email: str, years: range, content_root: str, output_file: str, silent=False, get_authors=False):
     """ Gets the publications for a school for a range of years and 
     writes them to a json file
 
@@ -104,17 +104,18 @@ def get_publications(ror: str, email: str, years: range, output_file: str, silen
         None
     """
     all_res = []
+
     for year in years:
         if not silent:
             print(f"Getting publications for {year}")
         all_res.extend(results_per_year(year, ror, email, silent))
-    with open(output_file,"w") as f:
+    with open(content_root + output_file,"w") as f:
         json.dump(all_res,f)
 
     if get_authors:
         if not silent:
             print("Getting authors")
-        with open("authors"+output_file,"w") as f:
+        with open(content_root+"authors_"+output_file,"w") as f:
             json.dump(get_all_authors(all_res, output_file), f)
         
 
@@ -278,6 +279,7 @@ if __name__ == "__main__":
     parser.add_argument("--content_root", help="Root directory for content")
     args = parser.parse_args()
     
+    # !!! If a databse name is given, 
     if args.database:
         # note that the year range is inclusive, if we decide that's confusing, we can drop the +1s
         # like in the case that someone only wants to run on a single year, then we should have the optional line that makes last year == first +1
@@ -288,6 +290,6 @@ if __name__ == "__main__":
             create(db_file)
         populate_database(args.database, args.ror, args.email, range(int(args.first_year), int(args.last_year)+1), args.content_root, args.output, args.silent)
     else:
-        get_publications(args.ror, args.email, range(int(args.first_year), int(args.last_year)+1), args.output, args.silent, args.get_authors)
+        get_publications(args.ror, args.email, range(int(args.first_year), int(args.last_year)+1), args.content_root, args.output, args.silent, args.get_authors)
     
 
