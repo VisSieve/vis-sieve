@@ -19,7 +19,6 @@
     - Column: xPos, Data Type: INTEGER
     - Column: yPos, Data Type: INTEGER
     - Column: zPos, Data Type: INTEGER
-    - <b>New!</b> Column: Score, Data Type: DOUBLE
 - Table: institution
     - Column: id, Data Type: BIGINT
     - Column: ror, Data Type: VARCHAR
