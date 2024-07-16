@@ -35,7 +35,7 @@
     - Column: oa_url, Data Type: VARCHAR
     - Column: pdf_path, Data Type: VARCHAR
     - Column: inst_id, Data Type: BIGINT
-    - <del> Column: topics, Data Type: INTEGER </del>
+    - <b>update! </b>Column: primary_topic_id, Data Type: INTEGER 
 - Table: residence
     - Column: au_id, Data Type: BIGINT
     - Column: inst_id, Data Type: BIGINT
