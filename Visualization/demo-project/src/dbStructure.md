@@ -19,6 +19,7 @@
     - Column: xPos, Data Type: INTEGER
     - Column: yPos, Data Type: INTEGER
     - Column: zPos, Data Type: INTEGER
+    - <b>New!</b> Column: Score, Data Type: DOUBLE
 - Table: institution
     - Column: id, Data Type: BIGINT
     - Column: ror, Data Type: VARCHAR
@@ -56,6 +57,12 @@
     - Column: score, Data Type: DOUBLE
 -----------------------------------
 ## add this table for altas
+- Table: charts 
+    - Column: id, Data Type: BIGINT
+    - Column: chart_type, Data Type: VARCHAR
+    - Column: xPos, Data Type: DOUBLE
+    - Column: yPos, Data Type: DOUBLE
+    - Column: zPos, Data Type: DOUBLE
 - Table: altas 
     - Column: id, Data Type: BIGINT
     - Column: server_path, Data Type: VARCHAR
