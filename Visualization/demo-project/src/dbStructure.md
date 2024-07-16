@@ -45,14 +45,14 @@
     - Column: subfield, Data Type: VARCHAR
     - Column: field, Data Type: VARCHAR
     - Column: domain, Data Type: VARCHAR
-- Table: work_keyword
+- Table: paper_keyword
     - Column: id, Data Type: BIGINT
-    - Column: work_id, Data Type: BIGINT
+    - Column: paper_id, Data Type: BIGINT
     - Column: keyword_id, Data Type: BIGINT
     - Column: score, Data Type: DOUBLE
-- Table: work_topic
+- Table: paper_topic
     - Column: id, Data Type: BIGINT
-    - Column: work_id, Data Type: BIGINT
+    - Column: paper_id, Data Type: BIGINT
     - Column: topic_id, Data Type: BIGINT
     - Column: score, Data Type: DOUBLE
 -----------------------------------
