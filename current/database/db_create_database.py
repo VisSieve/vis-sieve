@@ -10,7 +10,7 @@ def create(name):
                 DROP TABLE IF EXISTS contribution;
                 DROP TABLE IF EXISTS figure;
                 DROP TABLE IF EXISTS figure_property;
-                DROP TABLE IF EXISTS institution;
+                DROP TABLE IF EXISTS institution; #DONE
                 DROP TABLE IF EXISTS keyword;
                 DROP TABLE IF EXISTS paper;
                 DROP TABLE IF EXISTS residence;
@@ -81,6 +81,7 @@ def create(name):
         doi VARCHAR(100),
         publication_date DATE,
         oa_url VARCHAR(200),
+        oa_status VARCHAR(20),
         pdf_path VARCHAR(150),
         inst_id BIGINT,
     );                
