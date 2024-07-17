@@ -198,7 +198,7 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
         silent (bool): silence output
     """
     con = db.connect(database_file)
-    inst_id = add_institution_to_db(con, institution_ror=ror)
+    inst_id = add_institution_to_db(con, institution_ror=ror) # returns institution_id
 
     for year in years:
         if not silent:
@@ -211,13 +211,14 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
             #await add_publication_and_figures(con, pub, content_root, playwright)
             # TODO wrap these publication table lines in a function
             
-            pub_date = pub["publication_date"]
+            
             pub_id = int(pub["id"].split("W")[-1])
             pub_title = pub["title"][:200].replace("'", "")
             pub_doi = pub["doi"]
+            pub_date = pub["publication_date"]
             pub_oa_url = pub["open_access"]["oa_url"]
-            pub_inst_id = inst_id
             pub_oa_status = pub["open_access"]["oa_status"]
+            pub_inst_id = inst_id
             # this section is checking for whether the table has the paper in it already
             con.execute(f"SELECT COUNT(1) FROM paper WHERE id = {pub_id};")
             exists = con.fetchone()[0]
@@ -226,7 +227,7 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
                 # want to continue to the next publication and not try to update either paper table, or the authorship tables, because this has already happened
                 continue
 
-            con.execute(f"""INSERT INTO paper (id, title, doi, publication_date, oa_url,inst_id) VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}','{pub_inst_id}');""")
+            con.execute(f"""INSERT INTO paper (id, title, doi, publication_date, oa_url, oa_status, inst_id) VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}', '{pub_oa_status}', '{pub_inst_id}');""")
             for a in pub["authorships"]:
                 # TODO make sure filter the authors and only include the people that are actually affiliated with our ROR code 
                 institutions = a["institutions"]
