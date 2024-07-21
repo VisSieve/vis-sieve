@@ -102,10 +102,9 @@ def create(name):
             );        
         
         CREATE TABLE paper_topic (
-            id BIGINT,
             paper_id BIGINT,
             topic_id BIGINT,
-            score DOUBLE
+            topic_score DOUBLE
         ); 
                 
     ''')
