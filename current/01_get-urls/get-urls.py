@@ -23,7 +23,7 @@ import os
 from pathlib import Path
 
 # modules we've written
-from database.db_create_database import create
+from current.database.db_create_database import create
 
 def remove_duplicate_authors(publications, silent=False):
     """ Removes duplicate authors from a list of publications
@@ -160,7 +160,8 @@ def add_institution_to_db(con: db.DuckDBPyConnection, institution_ror: str = Non
     Returns:
         int: id of the institution
     """
-
+    # adding to 'institutions' TABLE
+    # *******************
     if institution_ror is not None:
         institution_info = rq.get(f"https://api.openalex.org/institutions/https://ror.org/{institution_ror}").json()
         institution_name = institution_name or institution_info["display_name"]
@@ -211,7 +212,8 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
             #await add_publication_and_figures(con, pub, content_root, playwright)
             # TODO wrap these publication table lines in a function
             
-            
+            # adding to 'papers' TABLE
+            # *******************
             pub_id = int(pub["id"].split("W")[-1])
             pub_title = pub["title"][:200].replace("'", "")
             pub_doi = pub["doi"]
@@ -222,12 +224,24 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
             # this section is checking for whether the table has the paper in it already
             con.execute(f"SELECT COUNT(1) FROM paper WHERE id = {pub_id};")
             exists = con.fetchone()[0]
-            
             if exists:
                 # want to continue to the next publication and not try to update either paper table, or the authorship tables, because this has already happened
                 continue
+            con.execute(f"""INSERT INTO paper 
+                            (id, title, doi, publication_date, oa_url, oa_status, inst_id) 
+                            VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}', '{pub_oa_status}', '{pub_inst_id}');
+                        """)
 
-            con.execute(f"""INSERT INTO paper (id, title, doi, publication_date, oa_url, oa_status, inst_id) VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}', '{pub_oa_status}', '{pub_inst_id}');""")
+            # adding to 'paper_topic' TABLE
+            # *******************
+            for topic in pub["topics"]:
+                topic_id = int(topic["id"].split("T")[-1])
+                topic_score = topic["score"]
+                con.execute(f"""INSERT INTO paper_topic 
+                                (paper_id, topic_id, topic_score) 
+                                VALUES ({pub_id}, {topic_id}, {topic_score});
+                            """)
+
             for a in pub["authorships"]:
                 # TODO make sure filter the authors and only include the people that are actually affiliated with our ROR code 
                 institutions = a["institutions"]
@@ -236,18 +250,25 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
                 rors = [Path(i["ror"]).stem for i in institutions]
                 # only add the author to the table if we see their affiliation with the university 
                 if ror in rors:
+
+                    # adding to 'author' TABLE
+                    # *******************
                     try:
                         con.execute(f"""INSERT INTO author VALUES ({a['author']['id'].split('A')[-1]}, '{a['author']['display_name'].replace("'", "")}');""")
                     except db.ConstraintException:
                         pass
-
+                    
+                    # adding to 'contribution' TABLE
+                    # *******************
                     try:
                         con.execute(f"INSERT INTO contribution VALUES ({a['author']['id'].split('A')[-1]}, {pub['id'].split('W')[-1]});")
                     except db.ConstraintException:
                         pass
                     
+                    # adding to 'residence' TABLE
+                    # *******************
                     for author_inst in a["institutions"]:
-                        # Making another change from Ben's code
+                        # Making another change from Ben's code (CSR Question: Does this add the institution to the 'institution table again?)
                         add_institution_to_db(con, institution_id=int(author_inst["id"].split("I")[-1]))
                         try:
                             con.execute(f"INSERT INTO residence VALUES ({a['author']['id'].split('A')[-1]}, {author_inst['id'].split('I')[-1]});")
