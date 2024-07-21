@@ -1,8 +1,10 @@
 import duckdb as db
+import pandas as pd
 
 def create(name):
-    # TODO add in code to handle if the .db isn't added
+    
     con = db.connect(f'{name}')
+    
     con.execute('''
                 DROP TABLE IF EXISTS atlas;
                 DROP TABLE IF EXISTS author;
@@ -21,7 +23,7 @@ def create(name):
     
         CREATE TABLE atlas AS
             SELECT * 
-            FROM read_csv('data/atlas.csv',
+            FROM read_csv('database/data/atlas.csv',
                 header = TRUE
             ); 
                     
@@ -32,7 +34,7 @@ def create(name):
 
         CREATE TABLE charts AS
             SELECT * 
-            FROM read_csv('data/charts.csv',
+            FROM read_csv('database/data/charts.csv',
                 header = TRUE
         );   
                 
@@ -73,6 +75,7 @@ def create(name):
             publication_date DATE,
             oa_url VARCHAR(200),
             oa_status VARCHAR(20),
+            pdf_retrieved VARCHAR(10),
             pdf_path VARCHAR(150),
             inst_id BIGINT,
         );                
@@ -84,9 +87,24 @@ def create(name):
         
         CREATE TABLE topic AS
             SELECT * 
-            FROM read_csv('data/openalex_topic-mapping-table_utf8_downloaded2024-07-17.csv',
-                header = TRUE
-            # creates columns:
+            FROM read_csv('database/data/openalex_topic-mapping-table_utf8_downloaded2024-07-17.csv',
+                header = TRUE           
+            );        
+        
+        CREATE TABLE paper_topic (
+            paper_id BIGINT,
+            topic_id BIGINT,
+            topic_score DOUBLE
+        ); 
+                
+    ''')
+
+    # Update database_structure.csv file with above structure
+    # uses pandas
+    result = con.execute("SHOW ALL TABLES").fetchdf()
+    result.to_csv('database/database_structure.csv', index=False)
+
+    # 'topic' table created with the following columns:
             #  *COLUMN_NAME*  *COLUMN_TYPE*  *NULL*
             #   topic_id       BIGINT         YES
             #   topic_name     VARCHAR        YES
@@ -98,15 +116,6 @@ def create(name):
             #   domain_name    VARCHAR        YES
             #   keywords       VARCHAR        YES
             #   summary        VARCHAR        YES
-            #   wikipedia_url  VARCHAR        YES              
-            );        
-        
-        CREATE TABLE paper_topic (
-            paper_id BIGINT,
-            topic_id BIGINT,
-            topic_score DOUBLE
-        ); 
-                
-    ''')
+            #   wikipedia_url  VARCHAR        YES  
 
     con.close()
