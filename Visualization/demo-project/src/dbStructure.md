@@ -1,4 +1,4 @@
-# Data Base
+# Data Table Schema
 
 - Table: author
     - Column: id, Data Type: BIGINT
@@ -19,6 +19,7 @@
     - Column: xPos, Data Type: INTEGER
     - Column: yPos, Data Type: INTEGER
     - Column: zPos, Data Type: INTEGER
+    - <b>New!</b> Column: score, Data Type: DOUBLE
 - Table: institution
     - Column: id, Data Type: BIGINT
     - Column: ror, Data Type: VARCHAR
@@ -34,7 +35,7 @@
     - Column: oa_url, Data Type: VARCHAR
     - Column: pdf_path, Data Type: VARCHAR
     - Column: inst_id, Data Type: BIGINT
-    - Column: topics, Data Type: INTEGER
+    - <b>update! </b>Column: primary_topic_id, Data Type: INTEGER 
 - Table: residence
     - Column: au_id, Data Type: BIGINT
     - Column: inst_id, Data Type: BIGINT
@@ -44,13 +45,26 @@
     - Column: subfield, Data Type: VARCHAR
     - Column: field, Data Type: VARCHAR
     - Column: domain, Data Type: VARCHAR
-- Table: work_keyword
+- Table: paper_keyword
     - Column: id, Data Type: BIGINT
-    - Column: work_id, Data Type: BIGINT
+    - Column: paper_id, Data Type: BIGINT
     - Column: keyword_id, Data Type: BIGINT
     - Column: score, Data Type: DOUBLE
-- Table: work_topic
+- Table: paper_topic
     - Column: id, Data Type: BIGINT
-    - Column: work_id, Data Type: BIGINT
+    - Column: paper_id, Data Type: BIGINT
     - Column: topic_id, Data Type: BIGINT
     - Column: score, Data Type: DOUBLE
+-----------------------------------
+## add this table for altas
+- Table: charts 
+    - Column: id, Data Type: BIGINT
+    - Column: chart_type, Data Type: VARCHAR
+    - Column: xPos, Data Type: DOUBLE
+    - Column: yPos, Data Type: DOUBLE
+    - Column: zPos, Data Type: DOUBLE
+- Table: altas 
+    - Column: id, Data Type: BIGINT
+    - Column: server_path, Data Type: VARCHAR
+    - Column: width, Data Type: BIGINT
+    - Column: height, Data Type: BIGINT
