@@ -2,6 +2,12 @@
 
 - 3D Ubreracruce Viz is the experimental showcase for the datasets collected and analysed in Vis-sievs Project that utilizes Three.js and D3.js for web-based 3D visualization.
 
+## Repository Layout
+
+- [vis-code.md](./vis-code.md) is the latest functional code
+- [Archive](./archive/) conatains the previous version of codes
+- [Key features](./keyfeatures/) gives you the basic understanding of key features
+
 ## Key Features
 
 - 3D Canavs allows you do naviage around, each image is clickable, just mouse needed for interaction

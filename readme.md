@@ -8,7 +8,6 @@
     1. Python Lib Pillow test
     2. Reviewing atrticles and documentation
     ----------------------------------------------------------------
-    - :
         
 - #### Step-4 Labeling Vis Images
     Reading:
@@ -16,7 +15,6 @@
         - [CLIP](https://openai.com/index/clip/)
     ----------------------------------------------------------------
     Working:
-    - 
     - [testing colab](https://colab.research.google.com/drive/1uPUIz_jyyN-8S2QcYoPG4Rn8sG5x4Ppg?usp=sharing)
 - #### Step-5 Visualization
     1. [Tutorial of Observable Framework](https://github.com/JimmyXwtx/OB-Tutorials)

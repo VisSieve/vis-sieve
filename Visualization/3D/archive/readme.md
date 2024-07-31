@@ -1,5 +1,11 @@
 # Archive
 
-- [demo-project](./demo-project/)
-- [Dynamiclly load the images](./Dynamically%20load%20Image%20in%20Observable%20Framework/)
-- [Make Images always facing towards the camera](./Make%20Images%20)
+- [Dynamiclly load the images](./dynamicLoad/)
+- [Make Images always facing towards the camera](./camer-sprite/)
+- [Use of 3.js in Observable Framework](./threejs-observable/)
+
+Full Project Progress documentation(archived), check the newest version [here](../readme.md)
+
+- [viz-demo-1](./viz-demo-1/)
+- [viz-demo-2](./viz-demo-2/)
+- [viz-demo-3](./viz-demo-3/)
