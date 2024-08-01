@@ -4,7 +4,7 @@
 
 ## Repository Layout
 
-- [vis-code.md](./vis-code.md) is the latest functional code
+- [vis-code.md](./vis-code.md) is the latest functional code, if you want the code can directly being used, look [this](https://github.com/JimmyXwtx/3dVis)
 - [Archive](./archive/) conatains the previous version of codes
 - [Key features](./keyfeatures/) gives you the basic understanding of key features
 
