@@ -13,6 +13,7 @@
     Reading:
     1. [Zero-shot image classification](https://huggingface.co/docs/transformers/en/tasks/zero_shot_image_classification)
         - [CLIP](https://openai.com/index/clip/)
+        - [working notebook](https://colab.research.google.com/drive/1uPUIz_jyyN-8S2QcYoPG4Rn8sG5x4Ppg#scrollTo=3HJbHD61uG-7)
     ----------------------------------------------------------------
     Working:
     - [testing colab](https://colab.research.google.com/drive/1uPUIz_jyyN-8S2QcYoPG4Rn8sG5x4Ppg?usp=sharing)

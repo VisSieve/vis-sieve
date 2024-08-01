@@ -1,5 +1,5 @@
 # Make Images always facing towards the camera
-- [Three.js-Object3D-Sprite](https://github.com/VisSieve/main/tree/Zhiyang-Doc/Visualization/Use%20of%203.js%20in%20Observable%20Framework)
+- [Three.js-Object3D-Sprite](../threejs-observable/)
 
 ```js
 const map = new THREE.TextureLoader().load( 'sprite.png' );
