@@ -19,8 +19,8 @@
     - [testing colab](https://colab.research.google.com/drive/1uPUIz_jyyN-8S2QcYoPG4Rn8sG5x4Ppg?usp=sharing)
 - #### Step-5 Visualization
     1. [Tutorial of Observable Framework](https://github.com/JimmyXwtx/OB-Tutorials)
-    2. [Use of 3.js in Observable Framework](https://github.com/VisSieve/main/tree/Zhiyang-Doc/Visualization/Use%20of%203.js%20in%20Observable%20Framework)
-    3. [Make image alwasys face towards the camera](https://github.com/VisSieve/main/tree/Zhiyang-Doc/Visualization/Make%20image%20alwasys%20face%20towards%20the%20camera)
-    4. [Dynamically load Image in Observable Framework]
-    5. [Create Giant Montage Image]
-    6. [Use Giant Montage Image to preload image for viz]
+    2. [Use of 3.js in Observable Framework](./Visualization/3D/keyfeatures/threejs-observable/)
+    3. [Make image alwasys face towards the camera](./Visualization/3D/keyfeatures/camer-sprite/)
+    4. [Dynamically load Image in Observable Framework](./Visualization/3D/keyfeatures/dynamicLoad/)
+    5. [Create Giant Montage Image](./Labeling%20Vis%20Images/preprocess_data/readme.md)
+
