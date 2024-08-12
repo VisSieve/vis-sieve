@@ -1,14 +1,24 @@
 # Make changes to existing database, need for 05_visualization step
 
 import duckdb as db
-import tqdm
 import os
-from pathlib import Path
-import requests as rq
-import json
 
 os.system('pwd') 
-con = db.connect("publications_princeton.db")
+con = db.connect("database/publications_princeton.db")
+
+#************************************************************************************
+#       UPDATE A ROW IN A TABLE
+#************************************************************************************
+
+#updates one row of <insert-table> database
+table = atlas
+column = server_path
+data_to_insert = row1[1]
+id = 1
+con.execute(f"""
+            UPDATE {table}
+            SET {column} = '{data_to_insert}' WHERE id = {id};
+            """)
 
 #************************************************************************************
 #       ADDING ATLAS TABLE
@@ -46,23 +56,30 @@ row4 = [4, "https://data.cyverse.org/dav-anon/iplant/home/carolinarr/vis-sieve/P
 #             ({row4[0]}, '{row4[1]}', {row4[2]}, {row4[3]});
 #             """)
 
-# Update data in Atlas table
+# Update one row in a table
 #******************************************
-# updates one row
+
+table = 'figure_property'
+colname = 'xPos'
+value_to_add = row1[1]
+
 con.execute(f"""
-            UPDATE atlas
-            SET server_path = '{row1[1]}' WHERE id = 1;
+            UPDATE {table}
+            SET {colname} = '{value_to_add}' WHERE id = 1;
             """)
 
 con.close()
 
 #************************************************************************************
-#       ADDING TO FIGURE_PROPERTY TABLE
+#       ADD A NEW COLUMN TO A TABLE
 #************************************************************************************
 
-# Add columns xPos, yPos, zPos
-con.execute("ALTER TABLE figure_property ADD COLUMN xPos INTEGER;")
-con.execute("ALTER TABLE figure_property ADD COLUMN yPos INTEGER;")
-con.execute("ALTER TABLE figure_property ADD COLUMN zPos INTEGER;")
+table = 'paper'
+colname = 'pdf_retrieved'
+coltype = 'VARCHAR(10)'
+
+con.execute(f"""
+            ALTER TABLE {table} ADD COLUMN {colname} {coltype};
+            """)
 
 con.close()

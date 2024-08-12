@@ -6,9 +6,12 @@ This space is to provide resources for the project, such as important links, pro
 
 ## GitHub
 
-+ Org: [https://github.com/VisSieve](https://github.com/VisSieve) (MAIN)
-+ Devin’s https://github.com/DevinBayly/vis-seive/
-+ Carolina’s https://github.com/carolinarr/vis-sieve
+* Org: [https://github.com/VisSieve](https://github.com/VisSieve) (MAIN)
+
+Older Repos  
+
+* Devin’s https://github.com/DevinBayly/vis-seive/
+* Carolina’s https://github.com/carolinarr/vis-sieve
 
 ## OpenAlex
 

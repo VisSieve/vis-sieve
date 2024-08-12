@@ -3,10 +3,24 @@
 We make use of two databases:
 1. **DuckDB Database** - for data (as tables)  
 Tables that hold all of the information about our data (e.g. institution id's, paper id's, author id's, figure id's, figure properties, etc.)
-2. **Cyverse Database** - for files  
+2. **Cyverse Database** - for files 
 Located within cyverse.org, this remote database holds all of our actual files (pdfs of papers, figure image files, etc.)
 
 ## DuckDB Information
+
+Database files that contain information about the institutions, papers, etc. should be created and sourced from within the database/ folder.
+
+### Database Creation Instructions
+
+```
+cd current
+conda activate vis-sieve
+python -i database/db_create_database.py
+>>> create('database/<name-of-.db-file>') # example: create(publications_2020.db)
+# if needed, use db_query_database.py file to verify db was created as expected
+>>> exit()
+```
+Note: Any .csv's you want to import must use UTF-8 character encoding.
 
 ### DuckDB Helpful Links
 
@@ -16,6 +30,9 @@ Located within cyverse.org, this remote database holds all of our actual files (
 ### DuckDB Explanation of Files
 **db_create_database.py**  
 creates a duckdb database file (.db file), to be used by hear_me_ROR_script.py (or Carolina's equivalent, get-urls.py script)
+
+**db_modify_atlas_table.py**  
+adds information to the atlas table
 
 **db_modify_database.py**  
 altered current .db file to make more suitable for visualization work  

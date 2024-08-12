@@ -99,10 +99,10 @@ def create(name):
                 
     ''')
 
-    # Update database_structure.csv file with above structure
+    # Update db_STRUCTURE.csv file with above structure
     # uses pandas
     result = con.execute("SHOW ALL TABLES").fetchdf()
-    result.to_csv('database/database_structure.csv', index=False)
+    result.to_csv('database/db_STRUCTURE.csv', index=False)
 
     # 'topic' table created with the following columns:
             #  *COLUMN_NAME*  *COLUMN_TYPE*  *NULL*

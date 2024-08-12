@@ -1,4 +1,9 @@
-# Stage 1: Get Urls
+# Stage 1: Get URLs
+
+## Diagram of Function in get-urls.py
+
+![Alt](../../images/function-diagram_get-urls.py.png) "Boxes listing each function in the get-urls.py script and links between which function calls which other function.")
+
 
 ## Package Installation
 
@@ -12,11 +17,7 @@ pip install duckdb --upgrade
 
 ## Database Creation
 
-```
-cd ../database
-python -i create_database.py
->>> create("publications_TEST_dates.db")
-```
+In database/ folder, within README.md see 'Database Creation Instructions' under 'DuckDB Information' section for code on creating database.
 
 ## Running the Script
 
@@ -33,12 +34,12 @@ with Carolina's code
 # must run from Carolina's 'current' folder
 cd current
 python -m 01_get-urls.get-urls \
-2023 2023 \
+2019 2019 \
 --ror 00hx57361 \
 --email c.roe-raymond@princeton.edu \
 --output urls.json \
 -a \
---database publications_princeton_2023.db \
+--database database/publications_princeton.db \
 --content_root results/ 
 ```
 

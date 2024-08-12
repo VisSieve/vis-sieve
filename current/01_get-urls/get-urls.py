@@ -23,7 +23,7 @@ import os
 from pathlib import Path
 
 # modules we've written
-from current.database.db_create_database import create
+from database.db_create_database import create
 
 def remove_duplicate_authors(publications, silent=False):
     """ Removes duplicate authors from a list of publications

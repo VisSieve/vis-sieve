@@ -2,28 +2,35 @@
 # Created by Carolina Roe-Raymond (c.roe-raymond@princeton.edu); July 
 # 2024.
 import duckdb as db
+import pandas as pd
 import os
 from tabulate import tabulate # pretty print tabular information
+
 
 # Connect to Data
 # ------------------------------------------
 
-# Choose data file (run only one of these lines)
-current_file = 'current/publications_princeton_2023.db'
-current_file = 'publications_princeton.db'
+# (for troubleshooting) check working directory, to check path to 'current_file' 
+os.system('pwd') 
 
-# # (for troubleshooting) check working directory, to check path to 'current_file' 
-# os.system('pwd') 
+# Choose data file (run only one of these lines)
+current_file = 'database/publications_princeton.db'
+current_file = 'test2.db'
 
 # connect to database
 con = db.connect(f"{current_file}")
 
 # List Database's Tables
 # ------------------------------------------
-con.sql("SHOW ALL TABLES;")
+con.sql("SHOW ALL TABLES")
 
 # Save above information
+# to python
 db_tables = con.execute("SHOW ALL TABLES;").fetchall()
+# to csv
+result = con.execute("SHOW ALL TABLES").fetchdf()
+result.to_csv('database/database_structure.csv', index=False)
+
 
 # Save above headers
 # # con.description contains the column names of database table
@@ -51,15 +58,32 @@ for item in db_tables:
 
 # View Data Within Specific Table
 # ------------------------------------------
-con.sql("""
+
+table_name = 'paper'
+
+# View first few rows
+con.sql(f"""
     SELECT *
-    FROM figure_property
-    LIMIT 10;
+    FROM {table_name}
+    LIMIT 17;
     """)
 
-# Calculate Total Number of Rows in a Table
-# ------------------------------------------
-# Execute the query to get the total number of rows
-table_name = 'atlas'
+# Total number of rows
 total_rows = con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
 print(total_rows)
+
+col_name = 'publication_date'
+
+# Range of a date column
+query = f"""
+        SELECT MIN({col_name}) AS min_date, 
+        MAX({col_name}) AS max_date
+        FROM {table_name};
+        """
+# Execute the query and fetch the result
+result = con.execute(query).fetchall()
+# Extract the minimum and maximum dates
+min_date, max_date = result[0]
+print(f"Date range: {min_date} to {max_date}")
+
+con.close()
