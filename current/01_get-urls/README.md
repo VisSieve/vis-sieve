@@ -18,6 +18,11 @@ pip install duckdb --upgrade
 ## Database Creation
 
 In database/ folder, within README.md see 'Database Creation Instructions' under 'DuckDB Information' section for code on creating database.
+```
+cd ../database
+python -i create_database.py
+>>> create("publications_TEST_dates.db")
+```
 
 ## Running the Script
 
@@ -34,7 +39,7 @@ with Carolina's code
 # must run from Carolina's 'current' folder
 cd current
 python -m 01_get-urls.get-urls \
-2019 2019 \
+2023 2023 \
 --ror 00hx57361 \
 --email c.roe-raymond@princeton.edu \
 --output urls.json \

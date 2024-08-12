@@ -33,6 +33,7 @@ This folder contains scripts, data, code, that Carolina is currently digging int
 conda create --name vis-sieve requests tqdm
 conda activate vis-sieve
 pip install duckdb --upgrade
+
 # packages needed for 02_get-pdfs
 conda config --add channels conda-forge
 conda config --add channels microsoft

@@ -160,8 +160,10 @@ def add_institution_to_db(con: db.DuckDBPyConnection, institution_ror: str = Non
     Returns:
         int: id of the institution
     """
+    
     # adding to 'institutions' TABLE
     # *******************
+    
     if institution_ror is not None:
         institution_info = rq.get(f"https://api.openalex.org/institutions/https://ror.org/{institution_ror}").json()
         institution_name = institution_name or institution_info["display_name"]
@@ -253,6 +255,7 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
 
                     # adding to 'author' TABLE
                     # *******************
+                    
                     try:
                         con.execute(f"""INSERT INTO author VALUES ({a['author']['id'].split('A')[-1]}, '{a['author']['display_name'].replace("'", "")}');""")
                     except db.ConstraintException:
@@ -260,6 +263,7 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
                     
                     # adding to 'contribution' TABLE
                     # *******************
+
                     try:
                         con.execute(f"INSERT INTO contribution VALUES ({a['author']['id'].split('A')[-1]}, {pub['id'].split('W')[-1]});")
                     except db.ConstraintException:

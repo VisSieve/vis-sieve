@@ -81,5 +81,4 @@ coltype = 'VARCHAR(10)'
 con.execute(f"""
             ALTER TABLE {table} ADD COLUMN {colname} {coltype};
             """)
-
 con.close()
