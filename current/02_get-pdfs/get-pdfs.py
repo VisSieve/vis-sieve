@@ -98,7 +98,7 @@ async def main():
           pdf_grab_result = await grab_pdf(pub_oa_url, pdf_path, playwright)
           print("PDF Retrieved? --->", pdf_grab_result)
           
-          # adding to 'paper' TABLE, 'pdf_grab_result' column
+          # adding to 'paper' TABLE, populating 'pdf_grab_result' column
           # *******************
           # Add whether pdf retrieval result was True or False to database
           con.execute(f"""

@@ -42,10 +42,10 @@ python -m 01_get-urls.get-urls \
 2023 2023 \
 --ror 00hx57361 \
 --email c.roe-raymond@princeton.edu \
---output urls.json \
+--output urls_2023.json \
 -a \
 --database database/publications_princeton.db \
---content_root results/ 
+--content_root results_json/ 
 ```
 
 Because of the way Carolina's folders are organized, need to run the command from the 'current' folder, but then run the desired python script (01_get-urls/get-urls.py) as a module by using the -m tag and calling the script as a module  with the '.' in the path. This approach ensures we don't need to modify sys.path.

@@ -14,7 +14,7 @@ from tabulate import tabulate # pretty print tabular information
 os.system('pwd') 
 
 # Choose data file (run only one of these lines)
-current_file = 'database/publications_princeton.db'
+current_file = 'database/publications_princeton_2019.db'
 current_file = 'test2.db'
 
 # connect to database
@@ -29,7 +29,7 @@ con.sql("SHOW ALL TABLES")
 db_tables = con.execute("SHOW ALL TABLES;").fetchall()
 # to csv
 result = con.execute("SHOW ALL TABLES").fetchdf()
-result.to_csv('database/database_structure.csv', index=False)
+result.to_csv('database/db_structure.csv', index=False)
 
 
 # Save above headers
@@ -59,22 +59,29 @@ for item in db_tables:
 # View Data Within Specific Table
 # ------------------------------------------
 
-table_name = 'paper'
+table_name = 'author'
+col_name = 'pdf_retrieved'
 
-# View first few rows
+# View entire table
 con.sql(f"""
     SELECT *
     FROM {table_name}
-    LIMIT 17;
     """)
 
-# Total number of rows
+# View head of table (first few rows)
+con.sql(f"""
+    SELECT *
+    FROM {table_name}
+    OFFSET 150 ROWS
+    LIMIT 200;
+    """)
+
+# View total number of rows
 total_rows = con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
 print(total_rows)
 
-col_name = 'publication_date'
 
-# Range of a date column
+# View range of a date column
 query = f"""
         SELECT MIN({col_name}) AS min_date, 
         MAX({col_name}) AS max_date
@@ -85,5 +92,13 @@ result = con.execute(query).fetchall()
 # Extract the minimum and maximum dates
 min_date, max_date = result[0]
 print(f"Date range: {min_date} to {max_date}")
+
+# Select rows that contain NULL for a certain column
+con.sql(f"""
+    SELECT *
+    FROM {table_name}
+    WHERE {col_name} IS NULL
+    """)
+
 
 con.close()

@@ -160,10 +160,8 @@ def add_institution_to_db(con: db.DuckDBPyConnection, institution_ror: str = Non
     Returns:
         int: id of the institution
     """
-    
     # adding to 'institutions' TABLE
     # *******************
-    
     if institution_ror is not None:
         institution_info = rq.get(f"https://api.openalex.org/institutions/https://ror.org/{institution_ror}").json()
         institution_name = institution_name or institution_info["display_name"]
@@ -255,7 +253,6 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
 
                     # adding to 'author' TABLE
                     # *******************
-                    
                     try:
                         con.execute(f"""INSERT INTO author VALUES ({a['author']['id'].split('A')[-1]}, '{a['author']['display_name'].replace("'", "")}');""")
                     except db.ConstraintException:
@@ -263,7 +260,6 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
                     
                     # adding to 'contribution' TABLE
                     # *******************
-
                     try:
                         con.execute(f"INSERT INTO contribution VALUES ({a['author']['id'].split('A')[-1]}, {pub['id'].split('W')[-1]});")
                     except db.ConstraintException:
@@ -293,7 +289,7 @@ database = 'publications_princeton_2023.db'
 content_root = 'results' """
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Get publications for a school")
+    parser = argparse.ArgumentParser(description="Get data on papers published for a school and add to database")
     parser.add_argument("first_year", help="First year to get publications for")
     parser.add_argument("last_year", help="Last year to get publications for")
     parser.add_argument("--ror", help="ROR of the school (UofA by default)", default="03m2x1q45")
