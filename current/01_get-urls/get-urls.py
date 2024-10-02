@@ -204,7 +204,7 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
     for year in years:
         if not silent:
             print(f"Getting publications for {year}, database version")
-        publications = results_per_year(year, ror, email, silent,testing=True)
+        publications = results_per_year(year, ror, email, silent)
         print("processing publications")
         for pub in tqdm(publications):
 
