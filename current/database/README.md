@@ -22,6 +22,10 @@ python -i database/db_create_database.py
 ```
 Note: Any .csv's you want to import must use UTF-8 character encoding.
 
+Table indicating at what stage and in which script data is populated into the DuckDB database:
+![Data sources table.](db_SOURCES.png)
+*Source*: [db_SOURCES Google Sheet](https://docs.google.com/spreadsheets/d/1wJZdH7vFdAMHbE6Qvalyt42nl_P1UagFhtbXisub1m4/edit?gid=0#gid=0)
+
 ### DuckDB Helpful Links
 
 * [mkdocs DuckDB database](https://vissieve.github.io/main/documentation/site/database/database_information/) documentation (Ben's)

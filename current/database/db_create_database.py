@@ -119,3 +119,5 @@ def create(name):
             #   wikipedia_url  VARCHAR        YES  
 
     con.close()
+
+    print("Success! db file created.")

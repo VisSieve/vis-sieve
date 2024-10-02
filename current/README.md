@@ -1,6 +1,7 @@
 # 'Current' Code for Carolina
 
 This folder contains scripts, data, code, that Carolina is currently digging into/understanding/modifying.
+
 ## Helpful Links
 
 * [Figma - project map](https://www.figma.com/board/mlFcDDqibMWoxwXmNUnLUb/project-map?node-id=0-1&t=TMlNJ20Bfj19TBCP-0)
@@ -33,7 +34,6 @@ This folder contains scripts, data, code, that Carolina is currently digging int
 conda create --name vis-sieve requests tqdm
 conda activate vis-sieve
 pip install duckdb --upgrade
-
 # packages needed for 02_get-pdfs
 conda config --add channels conda-forge
 conda config --add channels microsoft

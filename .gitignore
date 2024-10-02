@@ -1,3 +1,4 @@
 .vscode/settings.json
-current/results_json/*
+current/database/*.db
+current/results_json/*.json
 
