@@ -8,7 +8,7 @@ def create(name):
     con.execute('''
                 DROP TABLE IF EXISTS atlas;
                 DROP TABLE IF EXISTS author;
-                DROP TABLE IF EXISTS charts;
+                DROP TABLE IF EXISTS charttypes;
                 DROP TABLE IF EXISTS contribution;
                 DROP TABLE IF EXISTS figure;
                 DROP TABLE IF EXISTS figure_property;
@@ -32,9 +32,9 @@ def create(name):
             name VARCHAR(100) NOT NULL
         );    
 
-        CREATE TABLE charts AS
+        CREATE TABLE charttypes AS
             SELECT * 
-            FROM read_csv('database/data/charts.csv',
+            FROM read_csv('database/data/charttypes.csv',
                 header = TRUE
         );   
                 
@@ -48,13 +48,13 @@ def create(name):
             paper_id BIGINT,
             local_path VARCHAR(150),
             server_path VARCHAR(150),
+            caption VARCHAR(1000)
         );
                     
         CREATE TABLE figure_property (
-            name VARCHAR(100),
-            int_value INTEGER,
-            string_value VARCHAR(100),
+            id BIGINT,
             figure_id BIGINT,
+            charttype_id BIGINT,
             xPos INTEGER,
             yPos INTEGER,
             zPos INTEGER,
