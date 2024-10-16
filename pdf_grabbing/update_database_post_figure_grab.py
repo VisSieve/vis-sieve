@@ -2,13 +2,13 @@ from pathlib import Path
 import tqdm
 import duckdb as db
 
-connection = db.connect("publications_princeton.db")
+connection = db.connect("publications.db")
 
 # for each pdf that we have actual figures for we will create a bunch of entries 
 
 # follows the logic here https://vissieve.github.io/main/documentation/site/database/database_information/
 
-figures = sorted(Path("Princeton_content").glob("*/Figure*.png"))
+figures = sorted(Path("pdf_symlinks").glob("*/Figure*.png"))
 for i,figure in tqdm.tqdm(enumerate(figures)):
   paper_id = int(figure.parent.name)
   try:
