@@ -77,7 +77,7 @@ For this step we need the `pdffigures2.sif` container, and the following configu
 ```
 # go get the pdffigures2 repo
 git clone https://github.com/allenai/pdffigures2.git
-``
+```
 then inside the container we are set to run
 ```
 # we need to be inside the repo for things to work
