@@ -14,7 +14,7 @@ from tabulate import tabulate # pretty print tabular information
 os.system('pwd') 
 
 # Choose data file (run only one of these lines)
-current_file = 'database/publications_princeton_2019.db'
+current_file = 'database/publications_princeton_2023.db'
 current_file = 'test2.db'
 
 # connect to database
@@ -59,8 +59,8 @@ for item in db_tables:
 # View Data Within Specific Table
 # ------------------------------------------
 
-table_name = 'author'
-col_name = 'pdf_retrieved'
+table_name = 'paper'
+col_name = 'id'
 
 # View entire table
 con.sql(f"""
@@ -80,6 +80,12 @@ con.sql(f"""
 total_rows = con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
 print(total_rows)
 
+# Select rows that contain VALUE for a certain column
+con.sql(f"""
+    SELECT *
+    FROM {table_name}
+    WHERE {col_name} = 4367319112
+    """)
 
 # View range of a date column
 query = f"""

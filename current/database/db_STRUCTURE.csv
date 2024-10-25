@@ -1,19 +1,17 @@
 database,schema,name,column_names,column_types,temporary
-publications_princeton_2019,main,atlas,['id' 'server_path' 'width' 'height'],['BIGINT' 'VARCHAR' 'BIGINT' 'BIGINT'],False
-publications_princeton_2019,main,author,['id' 'name'],['BIGINT' 'VARCHAR'],False
-publications_princeton_2019,main,charts,['id' 'chart_type' 'xPos' 'yPos' 'zPos'],['BIGINT' 'VARCHAR' 'VARCHAR' 'VARCHAR' 'VARCHAR'],False
-publications_princeton_2019,main,contribution,['au_id' 'paper_id'],['BIGINT' 'BIGINT'],False
-publications_princeton_2019,main,figure,['id' 'paper_id' 'local_path' 'server_path'],['BIGINT' 'BIGINT' 'VARCHAR' 'VARCHAR'],False
-publications_princeton_2019,main,figure_property,"['name' 'int_value' 'string_value' 'figure_id' 'xPos' 'yPos' 'zPos'
- 'score']","['VARCHAR' 'INTEGER' 'VARCHAR' 'BIGINT' 'INTEGER' 'INTEGER' 'INTEGER'
- 'DOUBLE']",False
-publications_princeton_2019,main,institution,['id' 'ror' 'name'],['BIGINT' 'VARCHAR' 'VARCHAR'],False
-publications_princeton_2019,main,paper,"['id' 'title' 'doi' 'publication_date' 'oa_url' 'oa_status'
+publications_princeton_2023,main,atlas,['id' 'server_path' 'width' 'height'],['BIGINT' 'VARCHAR' 'BIGINT' 'BIGINT'],False
+publications_princeton_2023,main,author,['id' 'name'],['BIGINT' 'VARCHAR'],False
+publications_princeton_2023,main,charttypes,['id' 'chart_type' 'xPos' 'yPos' 'zPos'],['BIGINT' 'VARCHAR' 'VARCHAR' 'VARCHAR' 'VARCHAR'],False
+publications_princeton_2023,main,contribution,['au_id' 'paper_id'],['BIGINT' 'BIGINT'],False
+publications_princeton_2023,main,figure,['id' 'paper_id' 'local_path' 'server_path' 'caption'],['BIGINT' 'BIGINT' 'VARCHAR' 'VARCHAR' 'VARCHAR'],False
+publications_princeton_2023,main,figure_property,['id' 'figure_id' 'charttype_id' 'xPos' 'yPos' 'zPos' 'score'],['BIGINT' 'BIGINT' 'BIGINT' 'INTEGER' 'INTEGER' 'INTEGER' 'DOUBLE'],False
+publications_princeton_2023,main,institution,['id' 'ror' 'name'],['BIGINT' 'VARCHAR' 'VARCHAR'],False
+publications_princeton_2023,main,paper,"['id' 'title' 'doi' 'publication_date' 'oa_url' 'oa_status'
  'pdf_retrieved' 'pdf_path' 'inst_id']","['BIGINT' 'VARCHAR' 'VARCHAR' 'DATE' 'VARCHAR' 'VARCHAR' 'VARCHAR'
  'VARCHAR' 'BIGINT']",False
-publications_princeton_2019,main,paper_topic,['paper_id' 'topic_id' 'topic_score'],['BIGINT' 'BIGINT' 'DOUBLE'],False
-publications_princeton_2019,main,residence,['au_id' 'inst_id'],['BIGINT' 'BIGINT'],False
-publications_princeton_2019,main,topic,"['topic_id' 'topic_name' 'subfield_id' 'subfield_name' 'field_id'
+publications_princeton_2023,main,paper_topic,['paper_id' 'topic_id' 'topic_score'],['BIGINT' 'BIGINT' 'DOUBLE'],False
+publications_princeton_2023,main,residence,['au_id' 'inst_id'],['BIGINT' 'BIGINT'],False
+publications_princeton_2023,main,topic,"['topic_id' 'topic_name' 'subfield_id' 'subfield_name' 'field_id'
  'field_name' 'domain_id' 'domain_name' 'keywords' 'summary'
  'wikipedia_url']","['BIGINT' 'VARCHAR' 'BIGINT' 'VARCHAR' 'BIGINT' 'VARCHAR' 'BIGINT'
  'VARCHAR' 'VARCHAR' 'VARCHAR' 'VARCHAR']",False
