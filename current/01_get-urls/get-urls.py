@@ -2,11 +2,19 @@
 file: hear_me_ROR_script.py
 author: Ben Kruse
 Adapted from: hear_me_ROR.ipynb by Devin Bayly
+Further modified by Carolina Roe-Raymond
 
 Takes a ROR identification of school and a range of years,
 then:
-1 - generates a json file with the publications of the school for that period 
-2 - adds the information to a DuckDB database.
+
+if --database argument is NOT given
+1 - Queries OpenAlex database for all of the publications from the school for that period
+2 - generates a json file with all resutling publications 
+3 - generates a json file with all resulting authors who published 
+
+if --database argument is given
+1 - Queries OpenAlex database for all of the publications from the school for that period
+2 - adds the resulting information to a DuckDB database file
 """
 
 # modules that need to be installed
@@ -208,72 +216,85 @@ def populate_database(database_file: str, ror: str, email: str, years: range, co
         print("processing publications")
         for pub in tqdm(publications):
 
-            # Add publication to database
-            #await add_publication_and_figures(con, pub, content_root, playwright)
-            # TODO wrap these publication table lines in a function
-            
-            # adding to 'papers' TABLE
-            # *******************
-            pub_id = int(pub["id"].split("W")[-1])
-            pub_title = pub["title"][:200].replace("'", "")
-            pub_doi = pub["doi"]
-            pub_date = pub["publication_date"]
-            pub_oa_url = pub["open_access"]["oa_url"]
-            pub_oa_status = pub["open_access"]["oa_status"]
-            pub_inst_id = inst_id
-            # this section is checking for whether the table has the paper in it already
-            con.execute(f"SELECT COUNT(1) FROM paper WHERE id = {pub_id};")
-            exists = con.fetchone()[0]
-            if exists:
-                # want to continue to the next publication and not try to update either paper table, or the authorship tables, because this has already happened
-                continue
-            con.execute(f"""INSERT INTO paper 
-                            (id, title, doi, publication_date, oa_url, oa_status, inst_id) 
-                            VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}', '{pub_oa_status}', '{pub_inst_id}');
-                        """)
-
-            # adding to 'paper_topic' TABLE
-            # *******************
-            for topic in pub["topics"]:
-                topic_id = int(topic["id"].split("T")[-1])
-                topic_score = topic["score"]
-                con.execute(f"""INSERT INTO paper_topic 
-                                (paper_id, topic_id, topic_score) 
-                                VALUES ({pub_id}, {topic_id}, {topic_score});
+            try:
+                # Add publication to database
+                #await add_publication_and_figures(con, pub, content_root, playwright)
+                # TODO wrap these publication table lines in a function
+                
+                # adding to 'papers' TABLE
+                # *******************
+                pub_id = int(pub["id"].split("W")[-1])
+                # ----- !!! troubleshooting; delete when done
+                print(pub_id)
+                print(pub["title"][:200])
+                # -----
+                # use get
+                # look up putting everythign into try / accept
+                pub_title = pub["title"][:200].replace("'", "")
+                pub_doi = pub["doi"]
+                pub_date = pub["publication_date"]
+                pub_oa_url = pub["open_access"]["oa_url"]
+                pub_oa_status = pub["open_access"]["oa_status"]
+                pub_inst_id = inst_id
+                # this section is checking for whether the table has the paper in it already
+                con.execute(f"SELECT COUNT(1) FROM paper WHERE id = {pub_id};")
+                exists = con.fetchone()[0]
+                if exists:
+                    # want to continue to the next publication and not try to update either paper table, or the authorship tables, because this has already happened
+                    continue
+                con.execute(f"""INSERT INTO paper 
+                                (id, title, doi, publication_date, oa_url, oa_status, inst_id) 
+                                VALUES ({pub_id}, '{pub_title}', '{pub_doi}', '{pub_date}', '{pub_oa_url}', '{pub_oa_status}', '{pub_inst_id}');
                             """)
 
-            for a in pub["authorships"]:
-                # TODO make sure filter the authors and only include the people that are actually affiliated with our ROR code 
-                institutions = a["institutions"]
-                # get the rors from the institutions author is affiliated with
-                # use path to trim off only the last part
-                rors = [Path(i["ror"]).stem for i in institutions]
-                # only add the author to the table if we see their affiliation with the university 
-                if ror in rors:
+                # adding to 'paper_topic' TABLE
+                # *******************
+                for topic in pub["topics"]:
+                    topic_id = int(topic["id"].split("T")[-1])
+                    topic_score = topic["score"]
+                    con.execute(f"""INSERT INTO paper_topic 
+                                    (paper_id, topic_id, topic_score) 
+                                    VALUES ({pub_id}, {topic_id}, {topic_score});
+                                """)
 
-                    # adding to 'author' TABLE
-                    # *******************
-                    try:
-                        con.execute(f"""INSERT INTO author VALUES ({a['author']['id'].split('A')[-1]}, '{a['author']['display_name'].replace("'", "")}');""")
-                    except db.ConstraintException:
-                        pass
-                    
-                    # adding to 'contribution' TABLE
-                    # *******************
-                    try:
-                        con.execute(f"INSERT INTO contribution VALUES ({a['author']['id'].split('A')[-1]}, {pub['id'].split('W')[-1]});")
-                    except db.ConstraintException:
-                        pass
-                    
-                    # adding to 'residence' TABLE
-                    # *******************
-                    for author_inst in a["institutions"]:
-                        # Making another change from Ben's code (CSR Question: Does this add the institution to the 'institution table again?)
-                        add_institution_to_db(con, institution_id=int(author_inst["id"].split("I")[-1]))
+                for a in pub["authorships"]:
+                    # TODO make sure filter the authors and only include the people that are actually affiliated with our ROR code 
+                    institutions = a["institutions"]
+                    # get the rors from the institutions author is affiliated with
+                    # use path to trim off only the last part
+                    rors = [Path(i["ror"]).stem for i in institutions]
+                    # only add the author to the table if we see their affiliation with the university 
+                    if ror in rors:
+
+                        # adding to 'author' TABLE
+                        # *******************
                         try:
-                            con.execute(f"INSERT INTO residence VALUES ({a['author']['id'].split('A')[-1]}, {author_inst['id'].split('I')[-1]});")
+                            con.execute(f"""INSERT INTO author VALUES ({a['author']['id'].split('A')[-1]}, '{a['author']['display_name'].replace("'", "")}');""")
                         except db.ConstraintException:
                             pass
+                        
+                        # adding to 'contribution' TABLE
+                        # *******************
+                        try:
+                            con.execute(f"INSERT INTO contribution VALUES ({a['author']['id'].split('A')[-1]}, {pub['id'].split('W')[-1]});")
+                        except db.ConstraintException:
+                            pass
+                        
+                        # adding to 'residence' TABLE
+                        # *******************
+                        for author_inst in a["institutions"]:
+                            # Making another change from Ben's code (CSR Question: Does this add the institution to the 'institution table again?)
+                            add_institution_to_db(con, institution_id=int(author_inst["id"].split("I")[-1]))
+                            try:
+                                con.execute(f"INSERT INTO residence VALUES ({a['author']['id'].split('A')[-1]}, {author_inst['id'].split('I')[-1]});")
+                            except db.ConstraintException:
+                                pass
+
+            except TypeError:
+                print(f"***TypeError encountered with item: {pub_id}. Skipping to the next one.***")
+                # skip current iteration and go to next one
+                continue 
+
 
 
 """ # Data to be used for code development/debugging (comment section out when not in use!)

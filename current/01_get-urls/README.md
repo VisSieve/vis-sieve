@@ -44,7 +44,7 @@ python -m 01_get-urls.get-urls \
 --email c.roe-raymond@princeton.edu \
 --output urls_2023.json \
 -a \
---database database/publications_princeton.db \
+--database database/publications_princeton_2023.db \
 --content_root results_json/ 
 ```
 
