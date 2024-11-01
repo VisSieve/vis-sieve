@@ -1,4 +1,4 @@
 .vscode/settings.json
-current/database/*.db
+#current/database/*.db
 current/results_json/*.json
 *__pycache__*
